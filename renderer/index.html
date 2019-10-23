@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Ocelot</title>
+  <style>
+    * {
+      user-select: none;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    #dragger {
+      position: absolute;
+      top: 0;
+      width: 100vw;
+      height: 40px;
+      pointer-events: none;
+      -webkit-app-region: drag;
+    }
+  </style>
+</head>
+<body>
+  <div id="dragger"></div>
+  <div id="app"></div>
+  <script src="index.js"></script>
+</body>
+</html>

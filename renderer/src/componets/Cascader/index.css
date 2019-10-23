@@ -1,0 +1,28 @@
+.oce-cas__menu {
+  position: absolute;
+  z-index: 999999;
+  overflow: hidden;
+  padding: 0;
+  width: 120px;
+  border-radius: 3px;
+  background: #fff;
+  box-shadow: rgba(0,0,0,0.32) 2px 3px 15px;
+}
+
+.oce-cas__menu__item {
+  cursor: pointer;
+  position: relative;
+  list-style: none;
+  width: 120px;
+  padding: 10px 15px;
+}
+.oce-cas__menu__item:hover, .oce-cas__menu__item__active {
+  color: #fff;
+  background: #2593FC;
+}
+.oce-cas__menu__item > .anticon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}

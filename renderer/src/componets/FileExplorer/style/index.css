@@ -1,0 +1,47 @@
+.oce-file-explorer {
+  font-size: 12px;
+}
+.oce-file-explorer__table__head > table > thead {
+  background: #F9F9F9;
+  border-bottom: 1px solid #F1F1F1;
+}
+.oce-file-explorer__table__head > table > thead > tr > th {
+  padding: 16px 25px;
+}
+.oce-file-explorer__table__body > table > tbody > tr > td {
+  cursor: pointer;
+  padding: 10px 25px;
+  border-bottom: 1px solid #F1F1F1;
+}
+.oce-file-explorer__table__body > table > tbody > tr:hover {
+  background: #E6F7FF;
+}
+
+.active {
+  color: #fff;
+  background: #2593FC;
+}
+.active:hover {
+  background: #2593FC !important;
+}
+
+/* .ant-table-body {
+  padding-bottom: 200px;
+}
+.ant-table-placeholder {
+  border-bottom: none;
+}
+.ant-table-tbody > tr, .ant-table-tbody > tr > td, a {
+  transition: none !important;
+  -webkit-transition: none !important;
+}
+.ant-table-tbody > tr > td {
+  padding: 10px 16px;
+}        
+.active {
+  color: #fff;
+  background: #2593FC;
+}
+.active > td {
+  background: #2593FC !important;
+} */

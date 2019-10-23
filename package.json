@@ -1,0 +1,36 @@
+{
+  "name": "ocelot",
+  "version": "0.0.1",
+  "main": "./lib/index.js",
+  "author": "nightcats",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dev": "./node_modules/.bin/parcel ./renderer/index.html"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.9",
+    "@types/react-dom": "^16.9.2",
+    "@types/react-router": "^5.1.2",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "electron": "^6.0.12",
+    "parcel-bundler": "^1.12.4"
+  },
+  "dependencies": {
+    "antd": "^3.24.2",
+    "app-root-path": "^2.2.1",
+    "dayjs": "^1.8.16",
+    "menu": "^0.2.5",
+    "monaco-editor": "^0.18.1",
+    "react": "^16.10.2",
+    "react-contextmenu": "^2.11.0",
+    "react-custom-scrollbars": "^4.2.1",
+    "react-dnd": "^9.4.0",
+    "react-dnd-html5-backend": "^9.4.0",
+    "react-dom": "^16.10.2",
+    "react-router-dom": "^5.1.2",
+    "styled-jsx": "^3.2.2"
+  }
+}
