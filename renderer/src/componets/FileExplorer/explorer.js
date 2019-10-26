@@ -1,5 +1,6 @@
-import React from 'react';
+import React from 'react'
 import dayjs from "dayjs"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Scrollbars } from "react-custom-scrollbars"
 import { FILE_TYPE, ICONS } from "./constant"
 
@@ -10,8 +11,8 @@ const headerRender = () => (
     <table style={{width: '100%'}}>
       <colgroup>
         <col style={{width: '50%'}} />
-        <col style={{width: '30%', minWidth: '150px'}} />
-        <col style={{width: '20%', minWidth: '100px'}} />
+        <col style={{width: '30%', minWidth: 150 }} />
+        <col style={{width: '20%', minWidth: 100 }} />
       </colgroup>
       <thead style={{position: 'sticky', top: '0px'}}>
         <tr>
@@ -36,18 +37,12 @@ const fileUpdateAtFilter = updateAt => {
 
 const rowRender = file => (
   <React.Fragment>
-    <style jsx>{`
-      td > img {
-        margin-right: 10px;
-        height: 28px;
-      }
-    `}</style>
     <td>
-      <img src={ICONS[file.filetype]} style={{marginRight: '10px', height: '28px'}} />
-      {fileNameFilter(file.filename)}
+      <FontAwesomeIcon size="6x" icon={ICONS[file.filetype]} style={{ fontSize: 28, marginRight: 10, verticalAlign: 'middle' }}  />
+      <span style={{ verticalAlign: 'middle' }}>{fileNameFilter(file.filename)}</span>
     </td>
-    <td>{fileUpdateAtFilter(file.updateAt)}</td>
-    <td>{fileTypeFilter(file.filetype)}</td>
+    <td style={{ minWidth: 200 }}>{fileUpdateAtFilter(file.updateAt)}</td>
+    <td style={{ minWidth: 100 }}>{fileTypeFilter(file.filetype)}</td>
   </React.Fragment>
 )
 
@@ -73,8 +68,8 @@ const Explorer = props => {
           <table style={{width: '100%'}}>
             <colgroup>
               <col style={{width: '50%'}} />
-              <col style={{width: '30%', minWidth: '150px'}} />
-              <col style={{width: '20%', minWidth: '100px'}} />
+              <col style={{width: '30%', minWidth: 150 }} />
+              <col style={{width: '20%', minWidth: 100 }} />
             </colgroup>
             <tbody>
               {currentFiles.map ((file, index) => (

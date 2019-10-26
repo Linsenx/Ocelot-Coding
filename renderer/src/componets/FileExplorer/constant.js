@@ -8,6 +8,6 @@ export const FILE_TYPE_ORDER = {
 }
 
 export const ICONS = {
-  folder: require("../../../assets/folder.png"),
-  jsproject: require("../../../assets/jsproject.png")
+  folder: ['fas', 'folder'],
+  jsproject: ['fab', 'js-square']
 }

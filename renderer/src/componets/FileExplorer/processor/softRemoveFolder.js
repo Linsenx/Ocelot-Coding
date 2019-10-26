@@ -6,7 +6,7 @@ const trashbinPath = app.getPath('userData') + '/trashbin'
 export default (oldpath) => {
   try {
     const filename = oldpath.split('/').pop()
-    const newpath = path.resolve(trashbinPath, filename + '-' + new Date().valueOf())
+    const newpath = path.resolve(trashbinPath, filename)
     fs.renameSync(oldpath, newpath)
     return true
   } catch (e) {

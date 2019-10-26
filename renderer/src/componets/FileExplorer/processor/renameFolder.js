@@ -1,10 +1,9 @@
-const fs = window.require('fs')
+import { readOceConfig, writeOceConfig } from "../../../utils/oceConfigOperation"
 
-export default (oldpath, newpath) => {
-  try {
-    fs.renameSync(oldpath, newpath)
-    return true
-  } catch (e) {
-    return false
-  }
+export default (path, newname) => {
+  const config = readOceConfig(path)
+  if (!config) return false
+  config.filename = newname
+  writeOceConfig(path, config)
+  return true
 }

@@ -1,16 +1,18 @@
 const fs = window.require('fs')
+const path = window.require('path')
 
-export default (path, name) => {
-  let id = 1;
+export default (folderpath, name) => {
+  // let id = 1;
+  // const getNewFolderPath = () => {
+  //   return `${path}/${name} ${id}`
+  // }
+  // let newPath = ''
+  // while (fs.existsSync(newPath = getNewFolderPath())) {
+  //   id ++
+  // }
 
-  const getNewFolderPath = () => {
-    return `${path}/${name} ${id}`
-  }
-
-  let newPath = ''
-  while (fs.existsSync(newPath = getNewFolderPath())) {
-    id ++
-  }
-  fs.mkdirSync(newPath)
-  return newPath
+  const timestamp = './' + new Date().valueOf().toString()
+  const newpath = path.resolve(folderpath, timestamp)
+  fs.mkdirSync(newpath)
+  return newpath
 }

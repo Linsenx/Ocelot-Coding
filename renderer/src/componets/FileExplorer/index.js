@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Modal, Input, message } from "antd"
 import Explorer from "./explorer"
-import ContextMenu from "../../componets/ContextMenu"
+import ContextMenu from "../ContextMenu"
 import PathNavigation from "./navigation"
 import useWindowSize from "../../hooks/useWindowSize"
 import "./style/index.css"
@@ -12,20 +12,26 @@ import { FILE_TYPE_ORDER } from "./constant"
 import createFolder from "./processor/createFolder"
 import createJSProject from "./processor/createJSProject"
 import renameFolder from "./processor/renameFolder"
-import removeFolder from "./processor/removeFolder"
 import softRemoveFolder from "./processor/softRemoveFolder"
 
 import { useHistory } from "react-router-dom"
-
+import { useStateValue } from "../../reducer"
+import { OPEN_PROJECT } from "../../reducer/action"
 
 const FileExplorer = (props = {}) => {
   const history = useHistory()
   const { height: windowHeight } = useWindowSize()
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
+  // 状态管理
+  const [, dispatch] = useStateValue()
+
   // 当前目录数据
   const [currentPath, setCurrentPath] = useState(props.rootPath)
   const [currentFiles, setCurrentFiles] = useState([])
+
+  // 真实目录和虚拟目录名映射表
+  const [pathToNameMap, setPathToNameMap] = useState(new WeakMap())
 
   // 被选中文件索引
   const [selectRowIndex, setSelectRowIndex] = useState(-1)
@@ -50,16 +56,16 @@ const FileExplorer = (props = {}) => {
   const closeContextMenu = () => {
     setShowContextMenu(false)
   }
-  const getRowClass = (index) => {
-    return index === selectRowIndex ? 'active' : ' ';
-  }
-  const getCurrentFilePath = () => {
-    return path.resolve(currentPath, selectedFile.filename)
-  }
   const changeSelectedRow = (index) => {
     setSelectRowIndex(index)
     setSelectedFile(currentFiles[index])
   }
+  const getRowClass = (index) => {
+    return index === selectRowIndex ? 'active' : ' ';
+  }
+  const getCurrentFilePath = () => {
+    return path.resolve(currentPath, selectedFile.filepath)
+  }  
 
   const onRowClick = ({ index }) => {
     if (showContextMenu) { closeContextMenu(); return }
@@ -110,8 +116,11 @@ const FileExplorer = (props = {}) => {
       const oceConfigPath = `${currentPath}/${filename}/oce_package.json`
       if (fs.existsSync(oceConfigPath)) {
         const oceConfig = JSON.parse(fs.readFileSync(oceConfigPath).toString())
+        pathToNameMap[filename] = oceConfig.filename
+        setPathToNameMap(pathToNameMap)
         return {
-          filename: filename,
+          filepath: filename,
+          filename: oceConfig.filename,
           filetype: oceConfig.filetype,
           createAt: oceConfig.createAt,
           updateAt: oceConfig.updateAt,
@@ -123,6 +132,7 @@ const FileExplorer = (props = {}) => {
     if (path.relative(currentPath, props.rootPath) !== '') {
       fileDescripitons.unshift({
         filename: '..',
+        filepath: '..',
         filetype: 'folder',
         createAt: 0,
         updateAt: 0,      
@@ -161,10 +171,11 @@ const FileExplorer = (props = {}) => {
   const handleOpenEvent = ({ file }) => {
     switch(file.filetype) {
       case 'folder':
-        setCurrentPath(path.resolve(`${currentPath}/${file.filename}`))
+        setCurrentPath(path.resolve(currentPath, file.filepath))
         break
       case 'jsproject':
         history.push('/editor')
+        dispatch({ type: OPEN_PROJECT, path: path.resolve(currentPath, file.filepath) })
         break
     }
   }
@@ -173,20 +184,19 @@ const FileExplorer = (props = {}) => {
     setShowRenameModal(false)
     // 如果文件名没有变化，直接退出操作
     if (rename === '' || selectedFile.filename === rename) return 
-    const oldpath = getCurrentFilePath()
-    const newpath = path.resolve(currentPath, rename)
-    const status = renameFolder(oldpath, newpath)
-    if (status === false) {
-      message.error('该名称已被占用，请重试')
-    } else {
-      message.success('文件名已修改')
-    }
+    const path = getCurrentFilePath()
+    const status = renameFolder(path, rename)
+    status && message.success('文件名已修改')
     updateCurrentFiles()
   }
 
   return (
     <div className="oce-file-explorer">
-      <PathNavigation path={currentPath} onChangePath={(p)=>onChangePath(p)} />
+      <PathNavigation 
+        path={currentPath} 
+        pathToNameMap={pathToNameMap}
+        onChangePath={(p)=>onChangePath(p)} 
+      />
       { 
         showContextMenu && 
           <ContextMenu 
@@ -207,7 +217,11 @@ const FileExplorer = (props = {}) => {
         onOk={() => {handleRenameEvent()}}
         onCancel={() => setShowRenameModal(false)}
       >
-        <Input defaultValue={selectedFile.filename} onChange={(e) => setRename(e.target.value)} />
+        <Input 
+          defaultValue={selectedFile.filename} 
+          onChange={(e) => setRename(e.target.value)} 
+          onPressEnter={() => {handleRenameEvent()}}
+        />
       </Modal>
 
       <Explorer

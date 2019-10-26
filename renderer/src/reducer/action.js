@@ -1,0 +1,3 @@
+const OPEN_PROJECT = 'OPEN_PROJECT'
+
+export { OPEN_PROJECT }

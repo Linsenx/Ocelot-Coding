@@ -1,6 +1,6 @@
 const fs = window.require('fs')
 
-export default (path, filetype) => {
+export default ({ path, filetype, filename }) => {
   const config = {
     folder: {
       filetype: 'folder',
@@ -18,6 +18,13 @@ export default (path, filetype) => {
     return `${path}/oce_package.json`
   }
 
-  if (config[filetype] === undefined) return
-  fs.writeFileSync(getConfigPath(), Buffer.from(JSON.stringify(config[filetype])))
+  const getConfig = () => {
+    const typedConfig = config[filetype]
+    if (typedConfig === undefined) return undefined
+    typedConfig.filename = filename
+    return typedConfig
+  }
+
+  if (getConfig() === undefined) return
+  fs.writeFileSync(getConfigPath(), Buffer.from(JSON.stringify(getConfig())))
 }

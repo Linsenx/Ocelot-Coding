@@ -1,5 +1,5 @@
 .oce-file-explorer {
-  font-size: 12px;
+  font-size: 13px;
 }
 .oce-file-explorer__table__head > table > thead {
   background: #F9F9F9;
@@ -24,24 +24,3 @@
 .active:hover {
   background: #2593FC !important;
 }
-
-/* .ant-table-body {
-  padding-bottom: 200px;
-}
-.ant-table-placeholder {
-  border-bottom: none;
-}
-.ant-table-tbody > tr, .ant-table-tbody > tr > td, a {
-  transition: none !important;
-  -webkit-transition: none !important;
-}
-.ant-table-tbody > tr > td {
-  padding: 10px 16px;
-}        
-.active {
-  color: #fff;
-  background: #2593FC;
-}
-.active > td {
-  background: #2593FC !important;
-} */
