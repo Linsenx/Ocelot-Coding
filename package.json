@@ -46,6 +46,7 @@
     "menu": "^0.2.5",
     "monaco-editor": "^0.18.1",
     "parcel": "^1.12.4",
+    "re-resizable": "^6.1.0",
     "react": "^16.10.2",
     "react-contextmenu": "^2.11.0",
     "react-custom-scrollbars": "^4.2.1",

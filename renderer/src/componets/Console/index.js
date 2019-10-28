@@ -1,11 +1,9 @@
-import React, { useRef, useState } from "react"
-import useElementResize from "../../hooks/useElementResize"
-import "./style/index.less"
+import React, { useState } from 'react'
+import { noop } from '../../utils/func'
+import './style/index.less'
 
-const voidFunc = () => {}
-
-const ToggleBar = (props) => {
-  const { show = true, onToggleClick = voidFunc } = props
+const ToggleBar = props => {
+  const { show, onToggleClick } = props
 
   return (
     <div className="oce-console__toggle" onClick={onToggleClick}>
@@ -13,9 +11,13 @@ const ToggleBar = (props) => {
     </div>
   )
 }
+ToggleBar.defaultProps = {
+  show: true,
+  onToggleClick: noop
+}
 
-const Console = (props) => {
-  const { onToggleClick } = props
+const Console = props => {
+  const { onToggleClick, children } = props
   const [showConsole, setShowConsole] = useState(false)
 
   const onConsoleToggleClick = () => {
@@ -26,8 +28,14 @@ const Console = (props) => {
   return (
     <div className="oce-console">
       <ToggleBar onToggleClick={onConsoleToggleClick} />
+      <div className="oce-console__content">
+        { children }
+      </div>
     </div>
   )
 }
+Console.defaultProps = {
+  children: []
+}
 
-export default React.memo(Console)
+export default Console

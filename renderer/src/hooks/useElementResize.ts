@@ -53,6 +53,7 @@ export default function useElementResize(
       const heightChange = (pageY - originMouseY) * vertK
       if (horizontal) currentWidth = originWidth + widthChange
       if (vertical) currentHeight = originHeight + heightChange
+      console.log(pageY, heightChange)
       setSize()
     }
     anchor.current.addEventListener('mousedown', onMouseDown)
@@ -65,6 +66,7 @@ export default function useElementResize(
   }, [target, anchor, horizontal, vertical, key])
 
   useEffect(() => {
+    console.log('leave')
     if (horizontal) target.current.style.width = `${newSize.width}px`        
     if (vertical) target.current.style.height = `${newSize.height}px`
   }, [newSize])

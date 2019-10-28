@@ -1,12 +1,17 @@
-import React, { useRef, useState, useEffect } from 'react';
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.main.js';
-import ThemeAtomLight from "./theme-atom-light"
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle
+} from 'react'
+import { noop } from '../../utils/func'
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.main.js'
+import ThemeAtomLight from './theme-atom-light'
 monaco.editor.defineTheme('Atom-Light', ThemeAtomLight)
 
-const voidFunc = () => {}
-
-const MonacoEditor = (props) => {
-  let { language, onChange } = props
+const MonacoEditor = forwardRef((props, ref) => {
+  let { language, onChange, defaultValue } = props
   const containerRef = useRef()
   const [editor, setEditor] = useState({})
 
@@ -16,9 +21,8 @@ const MonacoEditor = (props) => {
       fontSize: 14,
       theme: 'Atom-Light',
       language: language,
-      minimap: { enabled: false },
-      scrollBeyondLastLine: false,
-      automaticLayout: true
+      value: defaultValue,
+      minimap: { enabled: false }
     })
     editor.getModel().updateOptions({ tabSize: 2 })
     editor.onDidChangeModelContent(event => {
@@ -27,9 +31,27 @@ const MonacoEditor = (props) => {
     setEditor(editor)
   }
 
-  useEffect (() => {
+  useEffect(() => {
     initMonaco()
   }, [])
+
+  useEffect(() => {
+    setValue(defaultValue)
+  }, [editor])
+
+  const layout = () => {
+    editor && editor.layout && editor.layout()
+  }
+
+  const setValue = newValue => {
+    editor && editor.setValue && editor.setValue(newValue)
+  }
+
+  useImperativeHandle(ref, () => ({
+    layout,
+    setValue,
+    editor
+  }))
 
   return (
     <React.Fragment>
@@ -37,19 +59,17 @@ const MonacoEditor = (props) => {
         .monaco-editor-container {
           overflow: hidden;
           height: 100%;
-        }    
+        }
       `}</style>
-      <div
-        ref={containerRef}
-        className="monaco-editor-container"
-      ></div>
+      <div ref={containerRef} className="monaco-editor-container"></div>
     </React.Fragment>
   )
-}
+})
 
 MonacoEditor.defaultProps = {
+  defaultValue: '',
   language: 'javascript',
-  onChange: voidFunc
+  onChange: noop
 }
 
 export default React.memo(MonacoEditor)

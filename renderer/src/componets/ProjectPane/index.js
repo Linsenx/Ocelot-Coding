@@ -1,31 +1,31 @@
-import React, { useState } from "react"
-import { PageHeader, Icon, Input } from "antd"
-import { useHistory } from "react-router-dom"
-import "./style/index.less"
+import React, { useState } from 'react'
+import { noop } from '../../utils/func'
+import { PageHeader, Icon, Input } from 'antd'
+import { useHistory } from 'react-router-dom'
+import './style/index.less'
 
-const voidFunc = () => {}
-
-const ToggleButton = (props) => {
-  const { show = true, onTogglePane = voidFunc } = props
+const ToggleButton = props => {
+  const { show, onTogglePane } = props
 
   const getClassName = () => {
     return [
-      "oce-project-pane__toggle",
-      !show ? "oce-project-pane__toggle_hidden" : ''
-    ].join(" ")
+      'oce-project-pane__toggle',
+      !show ? 'oce-project-pane__toggle_hidden' : ''
+    ].join(' ')
   }
 
   return (
-    <div 
-      className={getClassName()}
-      onClick={onTogglePane}
-    >
-      <Icon type={ show ? 'left' : 'right' } />
+    <div className={getClassName()} onClick={onTogglePane}>
+      <Icon type={show ? 'left' : 'right'} />
     </div>
   )
 }
+ToggleButton.defaultProps = {
+  show: true,
+  onToggle: noop
+}
 
-const ProjectPane = (props) => {
+const ProjectPane = props => {
   const { filename = '', show = true, onToggle } = props
 
   // History
@@ -33,28 +33,18 @@ const ProjectPane = (props) => {
 
   // 获得当前样式
   const getClassName = () => {
-    return [
-      "oce-project-pane",
-      !show ? "oce-project-pane_hidden" : ''
-    ].join(" ")
+    return ['oce-project-pane', !show ? 'oce-project-pane_hidden' : ''].join(
+      ' '
+    )
   }
 
   return (
     <div className={getClassName()}>
-      <ToggleButton
-        show={show}
-        onTogglePane={onToggle}
-      />
+      <ToggleButton show={show} onTogglePane={onToggle} />
 
-      <PageHeader
-        title="项目信息"
-        onBack={() => history.push('/explorer')}
-      />
+      <PageHeader title="项目信息" onBack={() => history.push('/explorer')} />
       <div className="oce-project-pane__container">
-        <Input.TextArea
-          rows={4}
-          defaultValue={filename} 
-        />
+        <Input.TextArea rows={4} defaultValue={filename} />
       </div>
     </div>
   )

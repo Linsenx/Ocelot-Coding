@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useReducer } from 'react'
-import { message } from 'antd'
 import { Resizable } from 're-resizable'
 import { Scrollbars } from 'react-custom-scrollbars'
 import Console from '../../componets/Console'
@@ -9,11 +8,8 @@ import EditorMenu from '../../componets/EditorMenu'
 import IframeJSSandbox from '../../componets/IframeSandbox'
 import { useStateValue } from '../../reducer'
 import { readOceConfig, writeOceConfig } from '../../utils/oceConfigOperation'
-import SaveJSProject from '../../componets/FileExplorer/processor/saveJSProject'
-import ReadJSProject from '../../componets/FileExplorer/processor/readJSProject'
-
+import useElementResize, { Between } from '../../hooks/useElementResize'
 import './style/index.less'
-import readJSProject from '../../componets/FileExplorer/processor/readJSProject'
 
 const EditorView = () => {
   // 全局状态
@@ -36,9 +32,40 @@ const EditorView = () => {
 
   // 调试面板
   const [debugWidth, setDebugWidth] = useState(300)
+  // const debugRef = useRef()
+  // const debugAnchorRef = useRef()
+  // const {
+  //   newSize: { width: debugWidth },
+  //   status: debugResizeStatus
+  // } = useElementResize({
+  //   key: showProjectPane,
+  //   horizontal: 'left',
+  //   target: debugRef,
+  //   anchor: debugAnchorRef,
+  //   onSizeChange: ({ width }) => ({
+  //     width: Between(
+  //       width,
+  //       200,
+  //       showProjectPane ? window.innerWidth - 300 : window.innerWidth
+  //     )
+  //   })
+  // })
 
   // 结果预览面板
-  const [resultHeight, setResultHeight] = useState(300)
+  // const resultRef = useRef()
+  // const resultAnchorRef = useRef()
+  // const {
+  //   newSize: { height: resultHeight },
+  //   setNewSize: setResultNewSize,
+  //   status: resultResizeStatus
+  // } = useElementResize({
+  //   vertical: 'down',
+  //   target: resultRef,
+  //   anchor: resultAnchorRef,
+  //   onSizeChange: ({ height }) => ({
+  //     height: Between(height, 50, window.innerHeight)
+  //   })
+  // })
 
   // 结果显示面板
   const resultSandboxRef = useRef()
@@ -58,20 +85,15 @@ const EditorView = () => {
 
   useEffect(() => {
     setOceConfig(readOceConfig(openedProjectPath))
-    const project = readJSProject(openedProjectPath)
-    onJSCodeChange({ code: project.JS })
-    onCSSCodeChange({ code: project.CSS })
-    onHTMLCodeChange({ code: project.HTML })    
   }, [])
-
   useEffect(() => {
     onLayoutEditors()
   }, [showProjectPane, debugWidth])
 
-  const getEditorStyle = editor => {
-    return currentEditor !== editor
-      ? { opacity: '0', pointerEvents: 'none' }
-      : {}
+  const getIframeStyle = () => {
+    // return resultResizeStatus === 'resizing' || debugResizeStatus === 'resizing'
+    //   ? { pointerEvents: 'none' }
+    //   : { pointerEvents: 'auto' }
   }
 
   const onConsoleToggleClick = isshow => {
@@ -95,22 +117,9 @@ const EditorView = () => {
   const onCSSCodeChange = ({ code }) => setCSSCode(code)
   const onHTMLCodeChange = ({ code }) => setHTMLCode(code)
 
-  // 运行代码
   const onRunCode = () => {
     consoleDispatch({ type: 'clear' })
     resultSandboxRef.current.runCode({
-      JS: JSCode,
-      CSS: CSSCode,
-      HTML: HTMLCode
-    })
-  }
-
-  // 保存代码
-  const onSaveCode = () => {
-    message.success('代码已保存')
-    SaveJSProject({
-      path: openedProjectPath,
-      config: { ...oceConfig, updateAt: new Date().valueOf() },
       JS: JSCode,
       CSS: CSSCode,
       HTML: HTMLCode
@@ -136,55 +145,81 @@ const EditorView = () => {
         <div className="container__rightside">
           <EditorMenu
             onRun={onRunCode}
-            onSave={onSaveCode}
+            onSave={() => {}}
             onSetting={() => {}}
             currentEditor={currentEditor}
             onSwitchEditor={editor => setCurrentEditor(editor)}
           />
           <div className="container__rightside__inner">
-            <div className="monaco-container">
-              <div style={getEditorStyle('html')}>
+            <div
+              className="monaco-container"
+              // style={{ width: `calc(100% - ${debugWidth}px)`, height: 'calc(100vh - 48px)' }}
+            >
+              <div
+                style={
+                  currentEditor !== 'html'
+                    ? { opacity: '0', pointerEvents: 'none' }
+                    : {}
+                }
+              >
                 <MonacoEditor
                   ref={HTMLEditor}
                   language="html"
                   onChange={onHTMLCodeChange}
-                  defaultValue={HTMLCode}
                 />
               </div>
-              <div style={getEditorStyle('css')}>
+              <div
+                style={
+                  currentEditor !== 'css'
+                    ? { opacity: '0', pointerEvents: 'none' }
+                    : {}
+                }
+              >
                 <MonacoEditor
                   ref={CSSEditor}
                   language="css"
                   onChange={onCSSCodeChange}
-                  defaultValue={CSSCode}
                 />
               </div>
-              <div style={getEditorStyle('javascript')}>
+              <div
+                style={
+                  currentEditor !== 'javascript'
+                    ? { opacity: '0', pointerEvents: 'none' }
+                    : {}
+                }
+              >
                 <MonacoEditor
                   ref={JSEditor}
                   language="javascript"
                   onChange={onJSCodeChange}
-                  defaultValue={JSCode}
                 />
               </div>
             </div>
-            <div className="debug-container">
+            <div
+              className="debug-container"
+              // ref={debugRef}
+            >
               <Resizable
                 enable={{ left: true }}
                 size={{ width: debugWidth }}
                 onResizeStop={(e, dir, ref, d) => {
                   setDebugWidth(prev => prev + d.width)
                 }}
+                // onResizeStop={onLayoutEditors}
               >
-                <div className="debug-container__anchor"></div>
-                <div className="result-container">
+                <div
+                  className="debug-container__anchor"
+                  // ref={debugAnchorRef}
+                ></div>
+                <div
+                  className="result-container"
+                  // ref={resultRef}
+                  style={getIframeStyle()}
+                >
                   <Resizable
-                    enable={{ bottom: true }}
-                    size={{ height: resultHeight }}
+                    defaultSize={{ height: 300 }}
                     maxHeight={window.innerHeight - 300}
-                    onResizeStop={(e, dir, ref, d) => {
-                      setResultHeight(prev => prev + d.height)
-                    }}
+                    enable={{ bottom: true }}
                   >
                     <IframeJSSandbox
                       ref={resultSandboxRef}
@@ -193,16 +228,16 @@ const EditorView = () => {
                   </Resizable>
                 </div>
                 <div className="console-container">
+                  {/* <div
+                  className="result-container__anchor"
+                  ref={resultAnchorRef}
+                ></div> */}
                   <Console onToggleClick={onConsoleToggleClick}>
-                    <Scrollbars
-                      style={{
-                        height: `calc(100vh - 30px - ${resultHeight}px)`
-                      }}
-                    >
-                      {consoleData.content.map((item, index) => {
-                        return <div key={index}> > {item.join(',')}</div>
-                      })}
-                    </Scrollbars>
+                    {/* <Scrollbars style={{ height: `calc(100vh - 30px - ${resultHeight}px)` }}> */}
+                    {consoleData.content.map((item, index) => {
+                      return <div key={index}> > {item.join(',')}</div>
+                    })}
+                    {/* </Scrollbars> */}
                   </Console>
                 </div>
               </Resizable>

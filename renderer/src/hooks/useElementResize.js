@@ -7,7 +7,7 @@ import { throttle } from "lodash"
 export default function useElementResize(
   { key, target, anchor, horizontal, vertical, onSizeChange }
 ) {
-
+  const [status, setStatus] = useState('normal')
   const [newSize, setNewSize] = useState({ width: 0, height: 0 })
   let currentWidth, currentHeight
   const horK = horizontal === 'right' ? 1 : horizontal === 'left' ? -1 : 0
@@ -16,12 +16,19 @@ export default function useElementResize(
     onSizeChange = ({ width, height }) => ({ width, height })
   }
 
-  const setSize = throttle(() => {
+  // const setSize = throttle(() => {
+  //   const size = onSizeChange({ width: currentWidth, height: currentHeight })
+  //   currentWidth = size.width || currentWidth
+  //   currentHeight = size.height || currentHeight
+  //   setNewSize({ width: currentWidth, height: currentHeight })
+  // }, 1000)
+
+  const setSize = () => {
     const size = onSizeChange({ width: currentWidth, height: currentHeight })
     currentWidth = size.width || currentWidth
     currentHeight = size.height || currentHeight
     setNewSize({ width: currentWidth, height: currentHeight })
-  }, 50)
+  }
 
   useEffect(() => {
     let originMouseX, originMouseY
@@ -29,9 +36,11 @@ export default function useElementResize(
     currentWidth = originWidth = target.current.clientWidth
     currentHeight = originHeight = target.current.clientHeight
     setSize()
+    setStatus('normal')
 
     const onMouseDown = (e) => {
       const { pageX, pageY } = e
+      setStatus('resizing')
       originMouseX = pageX
       originMouseY = pageY
       originWidth = target.current.clientWidth
@@ -40,6 +49,7 @@ export default function useElementResize(
       window.addEventListener('mousemove', onMouseMove)
     }
     const onMouseUp = (e) => {
+      setStatus('normal')
       window.removeEventListener('mousemove', onMouseMove)
     }
     const onMouseMove = (e) => {
@@ -48,6 +58,8 @@ export default function useElementResize(
       const heightChange = (pageY - originMouseY) * vertK
       if (horizontal) currentWidth = originWidth + widthChange
       if (vertical) currentHeight = originHeight + heightChange
+      if (horizontal) target.current.style.width = `${currentWidth}px`        
+      if (vertical) target.current.style.height = `${currentHeight}px`      
       setSize()
     }
     anchor.current.addEventListener('mousedown', onMouseDown)
@@ -64,7 +76,7 @@ export default function useElementResize(
     if (vertical) target.current.style.height = `${newSize.height}px`
   }, [newSize])
 
-  return [newSize, setNewSize]
+  return {newSize, setNewSize, status}
 }
 
 export function Between(number, minimal, maximal) {
