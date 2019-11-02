@@ -1,12 +1,17 @@
 const fs = window.require('fs')
 const path = window.require('path')
-const { app } = window.require('electron').remote
-const trashbinPath = app.getPath('userData') + '/trashbin'
+import { trashbinPath } from '../../../utils/oceFolderInitialization'
 
-export default (oldpath) => {
+export default oldpath => {
   try {
-    const filename = oldpath.split('/').pop()
-    const newpath = path.resolve(trashbinPath, filename)
+    const foldername = path
+      .resolve(oldpath)
+      .split(path.sep)
+      .pop()
+    if (foldername === 'project') {
+      return false
+    }
+    const newpath = path.resolve(trashbinPath, foldername)
     fs.renameSync(oldpath, newpath)
     return true
   } catch (e) {

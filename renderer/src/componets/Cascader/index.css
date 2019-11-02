@@ -1,6 +1,6 @@
 .oce-cas__menu {
   position: absolute;
-  z-index: 999999;
+  z-index: 900;
   overflow: hidden;
   padding: 0;
   width: 120px;

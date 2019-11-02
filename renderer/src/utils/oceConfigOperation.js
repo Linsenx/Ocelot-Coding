@@ -2,7 +2,6 @@ const fs = window.require('fs')
 const path = window.require('path')
 
 const readOceConfig = (projectpath) => {
-  console.log('read config')
   const configPath = path.resolve(projectpath, './oce_package.json')
   const hasConfig = fs.existsSync(configPath)
   if (hasConfig === false) return false

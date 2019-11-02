@@ -14,9 +14,17 @@
   border-bottom: 1px solid #F1F1F1;
 }
 .oce-file-explorer__table__body > table > tbody > tr:hover {
-  background: #E6F7FF;
+  background: #e6f7ff;
 }
 
+/* .oce-file-explorer__table__body.dragging .explorer-item * {
+  pointer-events: none;
+} */
+
+.target {
+  color: #fff;
+  background: #b37feb;
+}
 .active {
   color: #fff;
   background: #2593FC;

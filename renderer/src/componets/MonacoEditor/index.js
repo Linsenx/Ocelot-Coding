@@ -6,17 +6,17 @@ import React, {
   useImperativeHandle
 } from 'react'
 import { noop } from '../../utils/func'
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.main.js'
-import ThemeAtomLight from './theme-atom-light'
-monaco.editor.defineTheme('Atom-Light', ThemeAtomLight)
 
 const MonacoEditor = forwardRef((props, ref) => {
   let { language, onChange, defaultValue } = props
   const containerRef = useRef()
   const [editor, setEditor] = useState({})
 
-  const initMonaco = () => {
-    console.log('monaco init')
+  const initMonaco = async () => {
+    const monaco = await import("monaco-editor/esm/vs/editor/editor.main.js")
+    const ThemeAtomLight = await import('./theme-atom-light.js')
+    monaco.editor.defineTheme('Atom-Light', ThemeAtomLight.default)
+
     const editor = monaco.editor.create(containerRef.current, {
       fontSize: 14,
       theme: 'Atom-Light',

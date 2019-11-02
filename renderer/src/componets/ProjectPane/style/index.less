@@ -2,20 +2,34 @@
   position: relative;
   width: 300px;
   height: 100vh;
+  padding: 20px;
   background: #fff;
   border-right: 1px solid #D6D6D6;
   &_hidden {
     margin-left: -300px;
   }
+  &__title {
+    color: #545454;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    .anticon-left {
+      cursor: pointer;
+      margin-right: 10px;
+      -webkit-app-region: no-drag;
+      &:hover {
+        color: #2593FC;
+      }
+    }
+  }  
   &__container {
-    padding: 0 20px 20px 20px;
     & > textarea {
       resize: none;
       font-size: 13px;
     }
   }
   &__toggle {
-    z-index: 99999;
+    z-index: 900;
     cursor: pointer;
     display: flex;
     align-items: center; 

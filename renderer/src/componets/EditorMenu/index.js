@@ -31,18 +31,27 @@ const EditorMenu = props => {
       <style jsx>{`
         .oce-editor-menu {
           display: flex;
+          border-bottom: 1px solid #e8e8e8;
+        }
+        :global(.ant-menu-horizontal) {
+          border-bottom: none;
         }
       `}</style>
-      <Menu mode="horizontal" defaultSelectedKeys={[currentEditor]} onClick={onEditorMenuClick}>
+      <Menu
+        mode="horizontal"
+        defaultSelectedKeys={[currentEditor]}
+        onClick={onEditorMenuClick}
+        style={{ WebkitAppRegion: 'no-drag' }}
+      >
         <Menu.Item key="html">HTML</Menu.Item>
         <Menu.Item key="css">CSS</Menu.Item>
-        <Menu.Item key="javascript">JavaScript</Menu.Item>
+        <Menu.Item key="javascript">JS</Menu.Item>
       </Menu>
       <Menu
-        style={{ flexGrow: 1 }}
         mode="horizontal"
         selectable={false}
         onClick={onFunctionMenuClick}
+        style={{ WebkitAppRegion: 'no-drag' }}
       >
         <Menu.Item key="run">
           <Icon type="play-circle" />
@@ -52,10 +61,10 @@ const EditorMenu = props => {
           <Icon type="save" />
           保存
         </Menu.Item>
-        <Menu.Item key="setting">
+        {/* <Menu.Item key="setting">
           <Icon type="setting" />
           设置
-        </Menu.Item>
+        </Menu.Item> */}
       </Menu>
     </div>
   )

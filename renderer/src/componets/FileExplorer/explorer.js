@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import dayjs from 'dayjs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Scrollbars } from 'react-custom-scrollbars'
@@ -61,13 +61,47 @@ const Explorer = props => {
     onRowContextMenu,
     onPlaceHolderClick,
     onPlaceHolderContextMenu,
+    onMoveFile
   } = props
+  
+  const containerRef = useRef()
+  const [dragger, setDragger] = useState({})
+  const [draggingFile, setDraggingFile] = useState({})
+
+  const onFileDragStart = ({ event, file }) => {
+    event.currentTarget.style.opacity = .5
+    setDraggingFile(file)
+    setDragger(event.currentTarget)
+  }
+  const onFileDragEnter = e => {
+    e.currentTarget.classList.add('target')
+  }  
+  const onFileDragLeave = e => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    if (e.clientY < rect.top || e.clientY >= rect.bottom || e.clientX < rect.left || e.clientX >= React.right) {
+      e.currentTarget.classList.remove('target')
+    }
+  }
+  const onFileDragOver = e => {
+    e.preventDefault()
+  }  
+  const onFileDrop = ({ event, file }) => {
+    event.preventDefault()
+    dragger.style.opacity = ''
+    event.currentTarget.classList.remove('target')
+    containerRef.current.classList.remove('dragging')
+    if (file.filetype === 'folder' && file.filepath !== draggingFile.filepath) {
+      const movedFile = draggingFile.filepath
+      const moveToPath = file.filepath
+      onMoveFile(movedFile, moveToPath)
+    } 
+  }
 
   return (
     <div className="oce-file-explorer__table">
       {headerRender()}
       <Scrollbars style={{ height: scroll.height }}>
-        <div className="oce-file-explorer__table__body">
+        <div ref={containerRef} className="oce-file-explorer__table__body">
           <table style={{ width: '100%' }}>
             <colgroup>
               <col style={{ width: '50%' }} />
@@ -79,8 +113,13 @@ const Explorer = props => {
                 <tr
                   draggable="true"
                   key={index}
-                  className={getRowClass(index)}
+                  className={['explorer-item', getRowClass(index)].join(' ')}
                   onClick={event => onRowClick({ event, index, file })}
+                  onDrop={event => onFileDrop({ event, file })}
+                  onDragStart={event => onFileDragStart({ event, file })}
+                  onDragEnterCapture={onFileDragEnter}
+                  onDragLeave={onFileDragLeave}
+                  onDragOver={onFileDragOver}
                   onDoubleClick={event =>
                     onRowDoubleClick({ event, index, file })
                   }
@@ -113,7 +152,8 @@ Explorer.defaultProps = {
   onRowDoubleClick: noop,
   onRowContextMenu: noop,
   onPlaceHolderClick: noop,
-  onPlaceHolderContextMenu: noop
+  onPlaceHolderContextMenu: noop,
+  onMoveFile: noop
 }
 
 export default React.memo(Explorer)

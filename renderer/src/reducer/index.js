@@ -9,7 +9,6 @@ const initialState = {
 function reducer(state, action) {
   switch (action.type) {
     case OPEN_PROJECT:
-      console.log(action.path)
       return { ...state, openedProjectPath: action.path }
       
   }

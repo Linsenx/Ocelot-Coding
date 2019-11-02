@@ -1,24 +1,40 @@
-import React from "react"
-import { 
-  BrowserRouter as Router,
+import React, { useEffect } from 'react'
+import { Spin } from 'antd'
+import {
+  HashRouter as Router,
   Switch,
   Route,
   useHistory,
   useRouteMatch
-} from "react-router-dom"
+} from 'react-router-dom'
 
-import MainMenu from "./componets/MainMenu"
-import Explorer from "./views/ExplorerView"
-import Trashbin from "./views/TrashbinView"
-import Setting from "./views/SettingView"
-import EditorView from "./views/EditorView"
+import MainMenu from './componets/MainMenu'
+import Explorer from './views/ExplorerView'
+import Trashbin from './views/TrashbinView'
+import Setting from './views/SettingView'
+import EditorView from './views/EditorView'
+import { initOceFolderAsync } from './utils/oceFolderInitialization'
 
 const Loading = () => {
   const history = useHistory()
-  history.replace('/explorer')
+
+  useEffect(() => {
+    initOceFolderAsync().then(() => {
+      history.replace('/explorer')
+    })
+  }, [])
+
   return (
-    <div>
-      Loading Page...
+    <div className="container">
+      <style jsx>{`
+        .container {
+          display: flex;
+          height: 100vh;
+          justify-content: center;
+          align-items: center;
+        }
+      `}</style>
+      <Spin size="large" tip="努力加载中..."/>
     </div>
   )
 }
@@ -30,7 +46,7 @@ const Home = () => {
       <style jsx>{`
         .container {
           display: flex;
-        }      
+        }
       `}</style>
       <div className="container">
         <MainMenu />
@@ -38,22 +54,21 @@ const Home = () => {
           <Route exact path={path} component={Explorer} />
           <Route exact path={`${path}/trashbin`} component={Trashbin} />
           <Route exact path={`${path}/setting`} component={Setting} />
-        </Switch>        
+        </Switch>
       </div>
-    </React.Fragment>    
+    </React.Fragment>
   )
 }
 
 const Editor = () => {
   const { path, url } = useRouteMatch()
-  
+
   return (
     <Switch>
       <Route exact path={path} component={EditorView} />
-    </Switch>    
+    </Switch>
   )
 }
-
 
 const routes = () => {
   return (

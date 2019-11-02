@@ -1,43 +1,81 @@
 {
   "name": "ocelot",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "main": "./lib/index.js",
   "author": "nightcats",
   "license": "MIT",
+  "build": {
+    "productName": "Ocelot Coding",
+    "directories": {
+      "output": "build"
+    },
+    "dmg": {
+      "icon": "icon.png",
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "icon": "icon.png",
+      "target": {
+        "target": "nsis"
+      }
+    }
+  },
   "scripts": {
     "start": "electron .",
-    "build": "webpack --mode production",
-    "dev": "webpack-dev-server --inline --colors --mode development"
+    "build": "webpack --config ./config/webpack.prod.config.js --mode production",
+    "dev": "webpack-dev-server --config ./config/webpack.dev.config.js --inline --colors --mode development",
+    "pack": "electron-builder --dir",
+    "dist:mac": "electron-builder --mac",
+    "dist:win": "electron-builder --win"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-0",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.6.3",
     "@types/react": "^16.9.9",
     "@types/react-dom": "^16.9.2",
     "@types/react-router": "^5.1.2",
     "babel-loader": "^8.0.6",
+    "babel-plugin-import": "^1.12.2",
     "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.0.4",
     "css-loader": "^3.2.0",
     "electron": "^6.0.12",
+    "electron-builder": "^21.2.0",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "html-webpack-plugin": "^3.2.0",
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
     "monaco-editor-webpack-plugin": "^1.7.0",
     "style-loader": "^1.0.0",
+    "terser-webpack-plugin": "^2.2.1",
     "typescript": "^3.6.4",
     "webpack": "^4.41.2",
+    "webpack-bundle-analyzer": "^3.6.0",
     "webpack-cli": "^3.3.9",
     "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
+    "@babel/runtime": "^7.6.3",
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-brands-svg-icons": "^5.11.2",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/react-fontawesome": "^0.1.7",
+    "@loadable/component": "^5.10.3",
     "antd": "^3.24.2",
-    "app-root-path": "^2.2.1",
     "dayjs": "^1.8.16",
     "electron-is-dev": "^1.1.0",
     "emmet": "^1.6.3",
@@ -48,10 +86,7 @@
     "parcel": "^1.12.4",
     "re-resizable": "^6.1.0",
     "react": "^16.10.2",
-    "react-contextmenu": "^2.11.0",
     "react-custom-scrollbars": "^4.2.1",
-    "react-dnd": "^9.4.0",
-    "react-dnd-html5-backend": "^9.4.0",
     "react-dom": "^16.10.2",
     "react-monaco-editor": "^0.31.1",
     "react-router-dom": "^5.1.2",

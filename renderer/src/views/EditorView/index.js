@@ -1,3 +1,4 @@
+import { debounce } from 'lodash'
 import React, { useState, useEffect, useRef, useReducer } from 'react'
 import { message } from 'antd'
 import { Resizable } from 're-resizable'
@@ -6,6 +7,7 @@ import Console from '../../componets/Console'
 import ProjectPane from '../../componets/ProjectPane'
 import MonacoEditor from '../../componets/MonacoEditor'
 import EditorMenu from '../../componets/EditorMenu'
+import EditorSetting from '../../componets/EditorSetting'
 import IframeJSSandbox from '../../componets/IframeSandbox'
 import { useStateValue } from '../../reducer'
 import { readOceConfig, writeOceConfig } from '../../utils/oceConfigOperation'
@@ -43,6 +45,9 @@ const EditorView = () => {
   // 结果显示面板
   const resultSandboxRef = useRef()
 
+  // 设置面板
+  const [showSetting, setShowSetting] = useState(false)
+
   // 调试输出面板
   const [consoleData, consoleDispatch] = useReducer(
     function(state, action) {
@@ -61,7 +66,13 @@ const EditorView = () => {
     const project = readJSProject(openedProjectPath)
     onJSCodeChange({ code: project.JS })
     onCSSCodeChange({ code: project.CSS })
-    onHTMLCodeChange({ code: project.HTML })    
+    onHTMLCodeChange({ code: project.HTML })
+
+    let onWindowResize = debounce(onLayoutEditors, 500)
+    window.addEventListener('resize', onWindowResize)
+    return () => {
+      window.removeEventListener('resize', onWindowResize)
+    }
   }, [])
 
   useEffect(() => {
@@ -75,7 +86,7 @@ const EditorView = () => {
   }
 
   const onConsoleToggleClick = isshow => {
-    // setResultNewSize({ height: isshow ? 300 : window.innerHeight - 48 - 30 })
+    setResultHeight(resultHeight < window.innerHeight - 48 - 30 ? window.innerHeight - 48 - 30 : 300)
   }
   const onConsoleLog = args => {
     consoleDispatch({ type: 'add', item: args })
@@ -84,11 +95,14 @@ const EditorView = () => {
   const onToggleProjectPane = () => {
     setShowProjectPane(!showProjectPane)
   }
+  const onFilenameChange = e => {
+    setOceConfig(c => ({ ...c, filename: e.target.value }))
+  }
 
   const onLayoutEditors = () => {
-    JSEditor.current.layout()
-    CSSEditor.current.layout()
-    HTMLEditor.current.layout()
+    JSEditor.current && JSEditor.current.layout()
+    CSSEditor.current && CSSEditor.current.layout()
+    HTMLEditor.current && HTMLEditor.current.layout()
   }
 
   const onJSCodeChange = ({ code }) => setJSCode(code)
@@ -107,7 +121,7 @@ const EditorView = () => {
 
   // 保存代码
   const onSaveCode = () => {
-    message.success('代码已保存')
+    message.success('代码已保存', 0.5)
     SaveJSProject({
       path: openedProjectPath,
       config: { ...oceConfig, updateAt: new Date().valueOf() },
@@ -126,18 +140,20 @@ const EditorView = () => {
         }
       `}</style>
       <div className="container">
+        <EditorSetting show={showSetting} onClose={() => setShowSetting(false)} />
         <div className="container__leftside">
           <ProjectPane
             show={showProjectPane}
             onToggle={onToggleProjectPane}
             filename={oceConfig.filename}
+            onFilenameChange={onFilenameChange}
           />
         </div>
         <div className="container__rightside">
           <EditorMenu
             onRun={onRunCode}
             onSave={onSaveCode}
-            onSetting={() => {}}
+            onSetting={() => setShowSetting(true)}
             currentEditor={currentEditor}
             onSwitchEditor={editor => setCurrentEditor(editor)}
           />
@@ -181,7 +197,7 @@ const EditorView = () => {
                   <Resizable
                     enable={{ bottom: true }}
                     size={{ height: resultHeight }}
-                    maxHeight={window.innerHeight - 300}
+                    maxHeight={window.innerHeight - 48 - 30}
                     onResizeStop={(e, dir, ref, d) => {
                       setResultHeight(prev => prev + d.height)
                     }}

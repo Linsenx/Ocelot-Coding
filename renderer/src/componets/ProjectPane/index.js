@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { noop } from '../../utils/func'
-import { PageHeader, Icon, Input } from 'antd'
+import { Icon, Input } from 'antd'
 import { useHistory } from 'react-router-dom'
 import './style/index.less'
 
@@ -26,7 +26,7 @@ ToggleButton.defaultProps = {
 }
 
 const ProjectPane = props => {
-  const { filename = '', show = true, onToggle } = props
+  const { filename, show, onToggle, onFilenameChange } = props
 
   // History
   const history = useHistory()
@@ -42,12 +42,26 @@ const ProjectPane = props => {
     <div className={getClassName()}>
       <ToggleButton show={show} onTogglePane={onToggle} />
 
-      <PageHeader title="项目信息" onBack={() => history.push('/explorer')} />
+      <div className="oce-project-pane__title">
+        <Icon type="left" onClick={() => history.push('/explorer')} />
+        <span>项目信息</span>
+      </div>
+
       <div className="oce-project-pane__container">
-        <Input.TextArea rows={4} defaultValue={filename} />
+        <Input.TextArea
+          rows={4}
+          defaultValue={filename}
+          onChange={onFilenameChange}
+        />
       </div>
     </div>
   )
+}
+ProjectPane.defaultProps = {
+  show: true,
+  filename: '',
+  onToggle: noop,
+  onFilenameChange: noop
 }
 
 export default React.memo(ProjectPane)

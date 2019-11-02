@@ -5,8 +5,8 @@ const { Item } = Menu
 
 const menuSource = [
   { title: '代码管理器', path: '/explorer', icon: 'folder' },
-  { title: '垃圾箱', path: '/explorer/trashbin', icon: 'delete' },
-  { title: '软件设置', path: '/explorer/setting', icon: 'setting' },
+  { title: '垃圾箱', path: '/explorer/trashbin', icon: 'delete' }
+  // { title: '软件设置', path: '/explorer/setting', icon: 'setting' },
 ]
 
 const MainMenu = () => {
