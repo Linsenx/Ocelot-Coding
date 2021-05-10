@@ -80,7 +80,7 @@
     "electron-is-dev": "^1.1.0",
     "emmet": "^1.6.3",
     "global": "^4.4.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "menu": "^0.2.5",
     "monaco-editor": "^0.18.1",
     "parcel": "^1.12.4",
